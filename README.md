@@ -11,7 +11,7 @@ A small chatroom app based on Nodejs.
     
     cookie-parser
     
-I didn't upload thess libraries in this repo. Use npm to install them if nedded.
+I didn't upload these libraries in this repo. Use npm to install them if nedded.
 
 **Database:**
 
