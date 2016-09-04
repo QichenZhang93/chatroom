@@ -1,13 +1,15 @@
 # chatroom
 A small chatroom app based on Nodejs.
 
-**Used Library:**
+**Used Nodejs Library:**
 
     Socket.io
 
     expressjs
 
-    nodejs-mysql
+    mysql
+    
+    cookie-parser
 
 **Database:**
 
