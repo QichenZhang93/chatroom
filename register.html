@@ -1,0 +1,62 @@
+<!Doctype html>
+<html>
+    <head>
+        <title>Chatroom Register</title>
+        <style>
+            table, form {
+                margin: auto;
+                width: auto;
+                text-align: center
+            }
+
+            #title_container {
+                margin: 1em;
+                font-size: 3em;
+                text-align: center
+            }
+
+            button {
+                margin-right: 1em
+            }
+        </style>
+    </head>
+    <body>
+        <div id="title_container"><strong id="title">Mini Chatroom Rigistration</strong></div><br/><br/>
+        <form action="" method="GET">
+            <table>
+                <tr>
+                    <td><strong>Username:</strong></td>
+                    <td><input id="username" autocomplete="off"/></td>
+                </tr>
+                <tr>
+                    <td><strong>Password:</strong></td>
+                    <td><input id="password" autocomplete="off" type="password"/></td>
+                </tr>
+                <tr>
+                    <td><strong>Repeat password:</strong></td>
+                    <td><input id="re_password" autocomplete="off" type="password"/></td>
+                </tr>
+            </table><br/><br/>
+            <button>Register</button>
+            <a href="/login">Log in</a>
+        </form>
+        <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+        <script>
+            $('form').submit(function() {
+                var un = $.trim($('#username').val());
+                var pw = $.trim($('#password').val());
+                var r_pw = $.trim($('#re_password').val());
+                if (un == null || un == "" || pw == null || pw == "" || r_pw == null || r_pw == "") {
+                  alert("Please fill all inputs with no blank space!");
+                  return false;
+                }
+                if (pw != r_pw) {
+                    alert('Two passwords do not match!');
+                    return false;
+                }
+                this.action = "/register/username/" + $('#username').val() + "/password/" + $('#password').val();
+                return true;
+            });
+        </script>
+    </body>
+</html>

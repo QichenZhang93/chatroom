@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chatroom history</title>
+    <style>
+        #msglist {
+            list-style-type: none;
+        }
+
+        .msgitem {
+            border: black 1px solid;
+            border-radius: 50px;
+            margin: 3px;
+            margin-left: 10%;
+            margin-right: 10%;
+            padding: 5px 20px;
+        }
+
+        #bottom_bar {
+            text-align: center;
+            height: 2em;
+        }
+
+        .navig_link {
+            margin-right: 1em;
+            color: white;
+            background: black;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+        }
+    </style>
+  </head>
+  <body>
+      <div id="content">
+        <ul id="msglist"></ul>
+      </div><br/>
+    <div id="bottom_bar">
+    </div>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      function GetCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+          }
+        }
+        return "";
+    }
+    </script>
+    <script>
+        function buildMsgItem(username, send_time, content) {
+            var str = "";
+            str += "<li class=\"msgitem\">";
+            str += username;
+            str += (" @ " + send_time + "<br/>");
+            str += content;
+            str += "</li>";
+            return str;
+        }
+
+        $(document).ready(function() {
+            // bottom bar
+            var start = GetCookie('history_start');
+            var num = GetCookie('history_num');
+            var total_num;
+            total_num = GetCookie('msg_num');
+            if (parseInt(start, 10) >= parseInt(num, 10)) {
+                var pre_start = parseInt(start, 10) - parseInt(num, 10);
+                $('#bottom_bar').append('<a class="navig_link" href="/view_history/start/' + pre_start + '/num/' + num + '">Previous Page</a>');
+            }
+            if (parseInt(start, 10) + parseInt(num, 10) < total_num) {
+                var next_start = parseInt(start, 10) + parseInt(num, 10);
+                $('#bottom_bar').append('<a class="navig_link" href="/view_history/start/' + next_start + '/num/' + num + '">Next Page</a>');
+            }
+            // END
+
+            var httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = function() {
+                if (httpRequest.readyState == XMLHttpRequest.DONE && httpRequest.status == 200) {
+                    var jsonObj = JSON.parse(httpRequest.responseText);
+                    //alert(httpRequest.responseText);
+                    for (var i = 0; i < jsonObj.length; ++i) {
+                        // Pre process the send_time format: from yyyy-mm-ddThh:mm:ss.000Z to yyyy-mm-dd hh:mm:ss
+                        jsonObj[i].send_time = jsonObj[i].send_time.substring(0, 19);
+                        $('#msglist').append(buildMsgItem(jsonObj[i].username, jsonObj[i].send_time, jsonObj[i].content));
+                    }
+                }
+            };
+            httpRequest.open('GET', '/view_history/items/start/' + start + '/num/' + num);
+            httpRequest.send(null);
+        });
+    </script>
+  </body>
+</html>
+

@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chatroom log in</title>
+    <style>
+      form, table {
+        margin: auto;
+        width: auto;
+        text-align: center
+      }
+
+      #title_container {
+        margin: 1em;
+        font-size: 3em;
+        text-align: center
+      }
+
+      button {
+        margin-right: 1em
+      }
+    </style>
+  </head>
+  <body>
+    <div id="title_container"><strong id="title">Mini Chatroom</strong></div><br/><br/>
+    <form action="/login" method="GET">
+      <table>
+        <tr>
+          <td><strong>Username: </strong></td>
+          <td><input id="username" autocomplete="off" value="" /></td>
+        </tr>
+        <tr>
+          <td><strong>Password: </strong></td>
+          <td><input id="password" autocomplete="off" type="password" value="" /></td>
+        </tr>
+      </table>
+      <br/><br/>
+      <button>Log in</button>
+      <a href="/register">Register</a>
+    </form>
+    
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      $('form').submit(function(){
+        var un = $.trim($('#username').val());
+        var pw = $.trim($('#password').val());
+        if (un == null || un == "" || pw == null || pw == "") {
+          alert("Please fill all inputs with no blank space!");
+          return false;
+        }
+        this.action = "/login/username/" + un + "/password/" + pw;
+        return true;
+      });
+    </script>
+  </body>
+</html>
+

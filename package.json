@@ -1,0 +1,22 @@
+{
+  "name": "chatapp",
+  "version": "0.0.1",
+  "description": "My web app for instant msg.",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socket.io": "^1.4.8"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "node.js",
+    "socket.io",
+    "express",
+    "mysql"
+  ],
+  "author": "Qichen Zhang",
+  "license": "ISC"
+}

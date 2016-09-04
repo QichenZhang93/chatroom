@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chatroom</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { 
+        
+      }
+      form {
+        background: black; padding: 3px; position: fixed; bottom: 0; width: 100%;
+        height: wrap;
+      }
+      form input {
+        border-radius: 5px;
+        border: 0;
+        padding: 0 2px; width: 90%; margin-right: .5%; 
+        font-size: 2em;
+        height: 1.5em;
+      }
+      form button {
+        width: 9%; border: none;
+        font-size: 1.5em;
+        margin: 0;
+        background: white;
+        height: 2em;
+        border-radius: 10px;
+      }
+      form button:hover {
+        background: black;
+        color: white;
+      }
+
+      #topbarlist {
+        list-style-type: none;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+        background: black;
+      }
+
+      .topbaritem {
+        float: left;
+      }
+      
+      li a {
+        display: block;
+        padding: 1em;
+        text-decoration: none;;
+        color: white;
+      }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; 
+      }
+      #messages li { 
+        padding: 5px 10px;
+        background: white;
+        border: black solid 1px;
+        border-radius: 50px;
+        width: wrap;
+        margin-bottom: 10px;
+        margin-left: 0px;
+        margin-right: 50%;
+        padding: 5px 20px;
+      }
+
+      #messages li:nth-child(odd) {
+        
+      }
+      #messages li.selfmsg {
+        text-align: right;
+        margin-right: 0px;
+        margin-left: 50%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="topbar">
+      <ul id="topbarlist">
+        <li class="topbaritem">
+          <a href="/view_history/start/0/num/20" target="_blank">View history</a>
+        </li>
+        <li class="topbaritem"><a href="/logout">Log out</a></li>
+      </ul>
+    </div><br/>
+    <ul id="messages"></ul>
+    <form action="">
+      <input id="m" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script>
+      function GetCookie(cname) {
+        var name = cname + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0)==' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length,c.length);
+          }
+        }
+        return "";
+    }
+    </script>
+    <script>
+      function GetNow() {
+        //alert('GetNow()');
+        var date = new Date();
+        var year = date.getFullYear();
+        //alert(year);
+        var month;
+        if (date.getMonth() + 1 < 10) {
+          month = '0' +  (date.getMonth() + 1);
+        }
+        else month = date.getMonth() + 1;
+        //alert(month);
+        var day;
+        if (date.getDate() < 10) {
+          day = '0' + (date.getDate());
+        }
+        else day = date.getDate();
+        //alert(day);
+        var hour;
+        if (date.getHours() < 10) {
+          hour = '0' + date.getHours();
+        }
+        else hour = date.getHours();
+        //alert(hour);
+        var minute;
+        if (date.getMinutes() < 10) {
+          minute = '0' + date.getMinutes();
+        }
+        else minute = date.getMinutes();
+        //alert(minute);
+        var seconds;
+        if (date.getSeconds() < 10) {
+          seconds = '0' + date.getSeconds();
+        }
+        else seconds = date.getSeconds();
+        //alert(seconds);
+        return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + seconds;
+      }
+
+      var userid = GetCookie('userid');
+      var socket = io();
+      $('form').submit(function() {
+        //alert('Your message: has been sent.');
+        var msg = new Object(); // Important!!
+        //alert('Your message: ' + msg.userid + ' has been sent.');
+        msg['userid'] = userid;
+        //alert('Your message: ' + msg.userid + ' has been sent.');
+        msg['content'] = $('#m').val();
+        if (msg['content'] == "") return false;
+        //alert('Your message: ' + msg.content + ' has been sent.');
+        msg['send_time'] = GetNow();
+        //alert('Your message: ' + msg.send_time + ' has been sent.');
+        socket.emit('chat message', msg);
+        //alert('Your message: ' + String(msg) + ' has been sent.');
+        $('#m').val('');
+        return false;
+      });
+      socket.on('chat message', function(msg){
+        if (userid == msg.userid) {
+          $('#messages').append('<li class="selfmsg">' + msg.username + ' @ ' + msg.send_time + '<br/>' + msg.content + '</li>');
+        }
+        else {
+          $('#messages').append('<li>' + msg.username + ' @ ' + msg.send_time + '<br/>' + msg.content + '</li>');
+        }
+      });
+    </script>
+  </body>
+</html>
+
